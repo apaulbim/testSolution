@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" type="text/css" href="bootstrap.css">
+ 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+
+ 	<script type="text/javascript">
+  	var data = {"Contact": [
+
+      { "name": "SPaul", "telephone": "895465513"    },
+		  { "name": "Sam",   "telephone": "1535353232"   },
+		  { "name": "John",  "telephone": "256662313232" },
+		  { "name": "Sal",   "telephone": "54656564"     }
+
+		  ] };
+
+	</script>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Panel Header</div>
+      <div class="panel-body">
+      	<div class="input-group">
+			<div class="col-sm-2"><input type="text" class="form-control" id="name"  placeholder="Name"></div>
+			<div class="col-sm-2"><input type="text" class="form-control" id="telephone"  placeholder="Telephone"></div>
+
+			<div class="col-sm-2"> <button onclick="add_Contact()"  class="btn btn-success  btn-block"> Add   </button></div>
+			<div class="col-sm-2"> <button onclick="remove_Contact()" class="btn btn-danger  btn-block"> Remove   </button></div>
+			<div class="col-sm-2"> <button onclick="sort_ByContact_Name()" class="btn btn-info  btn-block"> Sort(Name)   </button></div>
+			<div class="col-sm-2"> <button onclick="sort_ByContac_Phone()" class="btn btn-info  btn-block"> Sort(phone )   </button></div>
+
+		</div>
+      </div>
+    </div>
+    <select class="col-sm-4" id="myContact" size="10" multiple class="form-control"></select>
+</div>
+
+<script type="text/javascript">
+  	$(document).ready(function () {
+        load_data();
+	});
+
+  	function sort_ByContact_Name(){
+      load_data();
+  		data.Contact.sort(sortByProperty('name'));
+  		load_data();
+  	}
+
+  	function sort_ByContac_Phone(){
+  		data.Contact.sort(sortByProperty('telephone'));
+  		load_data();
+  	}
+
+  	function sortByProperty(property) {
+	    'use strict';
+
+	    return function (a, b) {
+	        var sortStatus = 0;
+	        if (a[property] < b[property]) {
+	            sortStatus = -1;
+	        } else if (a[property] > b[property]) {
+	            sortStatus = 1;
+	        } return sortStatus;
+	    };
+	}
+
+
+    //////////////////////////////////////
+    //////   Load static Data SET    /////
+    //////////////////////////////////////
+
+    function load_data(){
+		var count = 0;
+    	for( property in data.Contact ){
+		    if(data.Contact.hasOwnProperty(property)){
+		        count++;
+		    }
+		}
+
+    	var listItems = '<option selected="selected" value="0">- Select -</option>';
+ 	    for (var i = 0; i < count; i++) {
+ 	    	listItems += "<option value='" + data.Contact[i].name + "'>" + data.Contact[i].name + '-' + data.Contact[i].telephone + "</option>";
+	    } $("#myContact").html(listItems);
+
+		document.getElementById("name").value = "";
+		document.getElementById("telephone").value = "";
+		$('#name').focus();
+    }
+
+
+	function chk_Duplicacy(name){
+		var data_Length = data.Contact.length;
+		for(i = 0; i < data_Length; i++) {
+			if(data.Contact[i].name == name){
+				return 0;
+			}else{
+				return 1;
+			}
+		}
+	}
+
+    //////////////////////////////////////
+    //////      Add Data             /////
+    //////////////////////////////////////
+
+    function add_Contact(){
+		var name = $('#name').val();
+		var tele_no = $('#telephone').val();
+
+		var data_Length = data.Contact.length;
+		if( (name.trim() != '') && ( tele_no.trim() != '') ) {
+			if(chk_Duplicacy(name) != 0){
+				data.Contact.push(
+			    	{id: data_Length, name: name, telephone: tele_no}
+				)
+			} else {
+				alert('Name Already Exists!')
+			} data_Length = data_Length + 1;
+		}else{
+			alert('Provide All Data Please !');
+		} load_data();
+	}
+
+	//////////////////////////////////////
+    //////      Remove Data          /////
+    //////////////////////////////////////
+
+	function remove_Contact() {
+		var data_Length = data.Contact.length;
+		var selected_Opt = $('#myContact').val();
+
+
+		for(i = 0; i < data_Length; i++) {
+
+			for (j = 0; j < selected_Opt.length; j++) {
+				if (selected_Opt[j] == data.Contact[i].name){
+					console.log( 'For Delete:' + selected_Opt[j] + '-' + data.Contact[i].name);
+					$("#myContact option[value='"+ selected_Opt[j] +"']").remove();
+          data.Contact.splice(i,1);
+					console.log(data.Contact);
+				}
+			}
+		}
+	}
+
+  </script>
+</body>
+</html>
